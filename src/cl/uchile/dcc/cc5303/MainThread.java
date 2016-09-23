@@ -9,9 +9,10 @@ public class MainThread extends Thread{
     public boolean[] keys;
     private final static String TITLE = "Juego - CC5303";
 
-    private final static int WIDTH = 800, HEIGHT = 600;
-    private final static int UPDATE_RATE = 40;
-    private final static int GROW_RATE = 100;
+    private final static int WIDTH = 800, HEIGHT = 800;
+    private final static int UPDATE_RATE = 30;
+    private final static int GROW_RATE = 30;
+    private final static int MOVE_RATE = 5;
 
     private JFrame frame;
     private Board tablero;
@@ -72,15 +73,18 @@ public class MainThread extends Thread{
                 tablero.p2.moveDown();
             }
 
-            // update players
-            tablero.p1.update();
-            tablero.p2.update();
 
-            if (++frames == GROW_RATE){
+            ++frames;
+            if (frames%MOVE_RATE == 0){
+                tablero.p1.update();
+                tablero.p2.update();
+            }
+            if (frames == GROW_RATE){
                 tablero.p1.growUp();
                 tablero.p2.growUp();
                 frames = 0;
             }
+            System.out.println(tablero.p1);
 
             // Tablero
             tablero.repaint();

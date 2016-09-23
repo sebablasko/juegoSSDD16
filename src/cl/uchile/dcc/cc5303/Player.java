@@ -5,6 +5,9 @@ import java.util.ArrayList;
 
 public class Player {
 
+    public static final int size = 8;
+
+
     public ArrayList<Point> body;
 
     public Player(Point point) {
@@ -14,18 +17,19 @@ public class Player {
 
     public void update(){
         int lastAngle;
-        int newAngle = this.body.get(0).angle;;
+        int newAngle = this.body.get(0).angle;
         for (Point p : this.body){
+            p.move();
             lastAngle = p.angle;
             p.angle = newAngle;
             newAngle = lastAngle;
-            p.move();
         }
     }
 
     public void draw(Graphics graphics) {
         for (Point p : this.body)
-            graphics.fillOval(p.x, p.y, 5, 5);
+            if (p.visible)
+                graphics.fillOval(p.x + size/2, p.y + size/2, size, size);
     }
 
     public void moveUp() {
@@ -39,7 +43,12 @@ public class Player {
     }
 
     public void growUp() {
-        Point tail = this.body.get(this.body.size()-1);
+        Point tail = this.body.get(this.body.size() - 1);
         this.body.add(tail.getShadow());
+    }
+
+    @Override
+    public String toString() {
+        return this.body.get(0).angle + " " + this.body.get(0).x + " " + this.body.get(0).y;
     }
 }

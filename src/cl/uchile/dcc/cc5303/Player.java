@@ -5,9 +5,7 @@ import java.util.ArrayList;
 
 public class Player {
 
-    public static final int size = 8;
-
-
+    public int angle;
     public ArrayList<Point> body;
 
     public Player(Point point) {
@@ -15,40 +13,29 @@ public class Player {
         this.body.add(point);
     }
 
-    public void update(){
-        int lastAngle;
-        int newAngle = this.body.get(0).angle;
-        for (Point p : this.body){
-            p.move();
-            lastAngle = p.angle;
-            p.angle = newAngle;
-            newAngle = lastAngle;
-        }
-    }
-
     public void draw(Graphics graphics) {
         for (Point p : this.body)
             if (p.visible)
-                graphics.fillOval(p.x + size/2, p.y + size/2, size, size);
+                graphics.fillOval(p.x - Point.dHip/2, p.y - Point.dHip/2, Point.dHip, Point.dHip);
     }
 
     public void moveUp() {
-        Point head = this.body.get(0);
-        head.angle = (head.angle + 10) % 360;
+        this.angle = (this.angle + 10) % 360;
     }
 
     public void moveDown() {
-        Point head = this.body.get(0);
-        head.angle = (head.angle - 10) % 360;
+        this.angle = (this.angle - 10) % 360;
     }
 
-    public void growUp() {
-        Point tail = this.body.get(this.body.size() - 1);
-        this.body.add(tail.getShadow());
+    public void growUp(boolean visibility) {
+        Point head = this.body.get(this.body.size() - 1);
+        int x = (int) (head.x + Point.dHip*Math.cos(Math.toRadians(this.angle)));
+        int y = (int) (head.y + Point.dHip*Math.sin(Math.toRadians(this.angle)));
+        this.body.add(new Point(x,y, visibility));
     }
 
     @Override
     public String toString() {
-        return this.body.get(0).angle + " " + this.body.get(0).x + " " + this.body.get(0).y;
+        return this.angle + " " + this.body.get(0).x + " " + this.body.get(0).y;
     }
 }

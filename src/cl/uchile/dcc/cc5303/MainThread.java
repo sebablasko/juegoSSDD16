@@ -3,6 +3,7 @@ package cl.uchile.dcc.cc5303;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Random;
 
 public class MainThread extends Thread{
 
@@ -11,8 +12,7 @@ public class MainThread extends Thread{
 
     private final static int WIDTH = 800, HEIGHT = 800;
     private final static int UPDATE_RATE = 30;
-    private final static int GROW_RATE = 30;
-    private final static int MOVE_RATE = 5;
+    private final static int GROW_RATE = 3;
 
     private JFrame frame;
     private Board tablero;
@@ -57,6 +57,8 @@ public class MainThread extends Thread{
     @Override
     public void run() {
         int frames = 0;
+        Random random = new Random();
+        int skipFrames = 0;
         while (true) { // Main loop
             // Controles
             if (keys[KeyEvent.VK_UP]) {
@@ -75,16 +77,23 @@ public class MainThread extends Thread{
 
 
             ++frames;
-            if (frames%MOVE_RATE == 0){
-                tablero.p1.update();
-                tablero.p2.update();
-            }
             if (frames == GROW_RATE){
-                tablero.p1.growUp();
-                tablero.p2.growUp();
+                if (skipFrames-- > 0){
+                    tablero.p1.growUp(false);
+                    tablero.p2.growUp(false);
+                }else {
+                    skipFrames = 0;
+                    tablero.p1.growUp(true);
+                    tablero.p2.growUp(true);
+
+                    if(random.nextFloat()< 0.1){
+                        skipFrames = 2 + random.nextInt(4);
+                        System.out.println(skipFrames);
+                    }
+                }
                 frames = 0;
             }
-            System.out.println(tablero.p1);
+
 
             // Tablero
             tablero.repaint();
